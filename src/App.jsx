@@ -29,19 +29,22 @@ function App() {
     setMode(!mode);
   }
 
-  function getMemosDB() {
-    ref.onSnapshot((querySnapshot) => {
-      const items = [];
-      querySnapshot.forEach((doc) => {
-        items.push(doc.data());
-      });
-      setMemos(items);
-      setCounter(items[items.length - 1].id + 1);
+  // function getMemosDB() {
+  //   ref.onSnapshot((querySnapshot) => {
+  //     const items = [];
+  //     querySnapshot.forEach((doc) => {
+  //       items.push(doc.data());
+  //     });
+  //     setMemos(items);
+  //     setCounter(items[items.length - 1].id + 1);
+  //   });
+  // }
+  async function getMemosDB() {
+    // get the data from the api
+    const reponse = await axios.get(`http://localhost:5555/memo/`);
+    const newData = await JSON.parse(reponse.data);
 
-      //   setTitle(items[0].title);
-      //   setDetail(items[0].detail);
-      //   setTracking(items[0].id);
-    });
+    console.log(newData);
   }
 
   //load the data once after mounting

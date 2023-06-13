@@ -8,15 +8,16 @@ router.route("/").get((req, res) => {
 });
 
 router.route("/fetchdata").get((req, res) => {
-  MemoData.find({ title: req.query.title })
+  MemoData.find({ id: req.query.id })
     .then((data) => res.json(data))
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
 router.route("/add").post((req, res) => {
+  const id = req.body.id;
   const title = req.body.title;
-  const info = req.body.info;
-  const newMemoData = new MemoData({ title, info });
+  const detail = req.body.info;
+  const newMemoData = new MemoData({ id, title, detail });
 
   newMemoData
     .save()
