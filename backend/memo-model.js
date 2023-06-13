@@ -2,16 +2,16 @@ const mongoose = require("mongoose");
 
 const Schema = mongoose.Schema;
 
-const wheelDataSchema = new Schema(
+const memoSchema = new Schema(
   {
-    term: { type: String, required: true },
-    data: { type: String, required: true },
+    title: { type: String, required: true },
+    info: { type: String, required: true },
   },
   {
     timestamps: true,
   }
 );
 
-const WheelData = mongoose.model("Neuromancer", wheelDataSchema);
+const MemoData = mongoose.model("Memos", memoSchema);
 
-module.exports = WheelData;
+module.exports = MemoData;

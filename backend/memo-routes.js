@@ -1,24 +1,24 @@
 const router = require("express").Router();
-let WheelData = require("./data-wheel-model.js");
+let MemoData = require("./memo-model.js");
 
 router.route("/").get((req, res) => {
-  WheelData.find()
+  MemoData.find()
     .then((data) => res.json(data))
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
 router.route("/fetchdata").get((req, res) => {
-  WheelData.find({ term: req.query.term })
+  MemoData.find({ title: req.query.title })
     .then((data) => res.json(data))
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
 router.route("/add").post((req, res) => {
-  const term = req.body.term;
-  const data = req.body.data;
-  const newWheelData = new WheelData({ term, data });
+  const title = req.body.title;
+  const info = req.body.info;
+  const newMemoData = new MemoData({ title, info });
 
-  newWheelData
+  newMemoData
     .save()
     .then(() => res.json("Data Added!"))
     .catch((err) => res.status(400).json("Error: " + err));

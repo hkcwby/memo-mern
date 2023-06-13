@@ -14,15 +14,15 @@ const uri = process.env.ATLAS_URI;
 mongoose.connect(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  dbName: "codeWheel",
+  dbName: "Memos",
 });
 
 const connection = mongoose.connection;
 connection.once("open", () => {
   console.log("MongoDB database connection made!");
 });
-const dataWheelRouter = require("./data-wheel-routes.js");
-app.use("/datawheel", dataWheelRouter);
+const memoRouter = require("./memo-routes.js");
+app.use("/memo", memoRouter);
 
 app.listen(port, () => {
   console.log(`its alive! port:${port}`);
