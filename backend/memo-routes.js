@@ -16,7 +16,7 @@ router.route("/fetchdata").get((req, res) => {
 router.route("/add").post((req, res) => {
   const id = req.body.id;
   const title = req.body.title;
-  const detail = req.body.info;
+  const detail = req.body.detail;
   const newMemoData = new MemoData({ id, title, detail });
 
   newMemoData
