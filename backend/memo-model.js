@@ -13,6 +13,6 @@ const memoSchema = new Schema(
   }
 );
 
-const MemoData = mongoose.model("Memos", memoSchema);
+const MemoData = mongoose.model("Memo", memoSchema);
 
 module.exports = MemoData;

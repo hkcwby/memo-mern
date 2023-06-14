@@ -7,6 +7,7 @@ import { ThemeProvider } from "@mui/material";
 import { theme, darkTheme } from "./theme.js";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import "./App.css";
+import axios from "axios";
 
 function App() {
   const ref = firebase.firestore().collection("memos");
@@ -41,16 +42,16 @@ function App() {
   // }
   async function getMemosDB() {
     // get the data from the api
-    const reponse = await axios.get(`http://localhost:5555/memo/`);
-    const newData = await JSON.parse(reponse.data);
-
-    console.log(newData);
+    const response = await axios.get(`http://localhost:5555/memo/`);
+    const newData = await response.data;
+    setMemos(newData);
+    setCounter(newData[newData.length - 1].id + 1);
   }
 
   //load the data once after mounting
 
   useEffect(() => {
-    getMemosDB(true);
+    getMemosDB();
   }, []);
 
   //a function to display relevant memo information(right panel) when memo item clicked(leftpanel)
@@ -80,10 +81,8 @@ function App() {
     setDetail(e.target.value);
   }
 
-  async function setMemoByID(memoID, memoDataObject) {
-    //example data for the first memo in the database
-    //ref.doc("0").set({title:"title of the first memo",id:0,detail:"details of the first memo"})
-    await ref.doc(memoID).set(memoDataObject);
+  async function setMemoByID(memoDataObject) {
+    axios.post(`http://localhost:5555/memo/add`, memoDataObject);
   }
 
   function handleMemoSubmit(event) {
@@ -102,10 +101,15 @@ function App() {
       return;
     }
     setTracking(counter + 1);
-    setMemoByID(String(tracking), {
-      title: title,
+    console.log({
       id: tracking,
-      detail: detail,
+      title: JSON.stringify(title),
+      detail: JSON.stringify(detail),
+    });
+    setMemoByID({
+      id: JSON.stringify(tracking),
+      title: JSON.stringify(title),
+      detail: JSON.stringify(detail),
     }).then(() => {
       setTitle("");
       setDetail("");
