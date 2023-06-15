@@ -57,7 +57,7 @@ function App() {
   //a function to remove a memo from storage
   async function handleDeleteClick(id) {
     //ref.doc(String(id)).delete();
-    await axios.delete(`http://localhost:5555/memo/${id}`);
+    axios.delete(`http://localhost:5555/memo/${id}`);
     setMemos(memos.filter((memo) => memo.id != id));
     setTracking(counter);
     setTitle("");
@@ -98,6 +98,15 @@ function App() {
       title: JSON.stringify(title),
       detail: JSON.stringify(detail),
     });
+
+    setMemos([
+      ...memos,
+      {
+        id: tracking,
+        title: JSON.stringify(title),
+        detail: JSON.stringify(detail),
+      },
+    ]);
     setMemoByID({
       id: JSON.stringify(tracking),
       title: JSON.stringify(title),
@@ -112,8 +121,8 @@ function App() {
   //a function to generate a clean memo for submission with a rudimentary unique id system
   function handleComposeClick() {
     setTracking(counter);
-    setTitle("");
-    setDetail("");
+    setTitle("New title");
+    setDetail("New memo");
   }
 
   return (
