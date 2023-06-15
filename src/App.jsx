@@ -30,16 +30,6 @@ function App() {
     setMode(!mode);
   }
 
-  // function getMemosDB() {
-  //   ref.onSnapshot((querySnapshot) => {
-  //     const items = [];
-  //     querySnapshot.forEach((doc) => {
-  //       items.push(doc.data());
-  //     });
-  //     setMemos(items);
-  //     setCounter(items[items.length - 1].id + 1);
-  //   });
-  // }
   async function getMemosDB() {
     // get the data from the api
     const response = await axios.get(`http://localhost:5555/memo/`);
@@ -65,8 +55,10 @@ function App() {
   }
 
   //a function to remove a memo from storage
-  function handleDeleteClick(id) {
-    ref.doc(String(id)).delete();
+  async function handleDeleteClick(id) {
+    //ref.doc(String(id)).delete();
+    await axios.delete(`http://localhost:5555/memo/${id}`);
+    setMemos(memos.filter((memo) => memo.id != id));
     setTracking(counter);
     setTitle("");
     setDetail("");
@@ -122,7 +114,6 @@ function App() {
     setTracking(counter);
     setTitle("");
     setDetail("");
-    // document.getElementById("formDetails").value=detail;
   }
 
   return (

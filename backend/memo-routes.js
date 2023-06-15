@@ -15,7 +15,7 @@ router.route("/fetchdata").get((req, res) => {
 
 router.route("/:id").delete((req, res) => {
   // MemoData.findByIdAndDelete(req.params.id)
-  MemoData.findOneAndDelete({ id: req.query.id })
+  MemoData.findOneAndDelete({ id: req.params.id })
     .then(console.log("successful delete"))
     .catch((err) => res.status(400).json("Error: " + err));
 });
