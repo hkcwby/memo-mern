@@ -25,6 +25,8 @@ function App() {
   const [tracking, setTracking] = useState(0);
   //set a validation variable to catch errors and provide user feedback
   const [validation, setValidation] = useState("");
+  //differentiate between an edit and a new memo
+  const [edit, setEdit] = useState(false);
 
   function darkModeToggle() {
     setMode(!mode);
@@ -58,6 +60,7 @@ function App() {
     setTracking(item[0].id);
     setTitle(item[0].title);
     setDetail(item[0].detail);
+    setEdit(true);
     // document.getElementById("formDetails").value = detail;
   }
 
@@ -83,6 +86,10 @@ function App() {
   async function setMemoByID(memoDataObject) {
     axios.post(`http://localhost:5555/memo/add`, memoDataObject);
   }
+  //posts the memo data to the database
+  async function updateMemoByID(id, memoDataObject) {
+    axios.post(`http://localhost:5555/memo/update/${id}`, memoDataObject);
+  }
   //event loop after a submission is made
   function handleMemoSubmit(event) {
     event.preventDefault();
@@ -98,32 +105,60 @@ function App() {
       return;
     } else {
       //if validations are fine proceed to load the new memo into the frontend store
-      setMemos([
-        ...memos,
-        {
+      if (!edit) {
+        setMemos([
+          ...memos,
+          {
+            id: tracking,
+            title: title,
+            detail: detail,
+          },
+        ]);
+        //also post to the back end store
+        setMemoByID({
           id: tracking,
-          title: JSON.stringify(title),
-          detail: JSON.stringify(detail),
-        },
-      ]);
-      //also post to the back end store
-      setMemoByID({
-        id: JSON.stringify(tracking),
-        title: JSON.stringify(title),
-        detail: JSON.stringify(detail),
-      }).then(() => {
-        //finally reset memo details and adjust tracking and counter
-        setTitle("");
-        setDetail("");
-        setValidation("");
-        setTracking(counter + 1);
-        setCounter(counter + 1);
-      });
+          title: title,
+          detail: detail,
+        }).then(() => {
+          //finally reset memo details and adjust tracking and counter
+          setTitle("");
+          setDetail("");
+          setValidation("");
+          setTracking(counter + 1);
+          setCounter(counter + 1);
+        });
+      } else {
+        setMemos(
+          memos.map((memo) =>
+            memo.id == tracking
+              ? {
+                  id: tracking,
+                  title: title,
+                  detail: detail,
+                }
+              : memo
+          )
+        );
+        //also post to the back end store
+        updateMemoByID({
+          id: tracking,
+          title: title,
+          detail: detail,
+        }).then(() => {
+          //finally reset memo details and adjust tracking and counter
+          setTitle("");
+          setDetail("");
+          setValidation("");
+          setTracking(counter + 1);
+          setCounter(counter + 1);
+        });
+      }
     }
   }
 
   //a function to generate a clean memo for submission with a rudimentary unique id system
   function handleComposeClick() {
+    setEdit(false);
     setTracking(counter);
     setTitle("New title");
     setDetail("New memo");
