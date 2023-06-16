@@ -34,8 +34,11 @@ function App() {
     // get the data from the api
     const response = await axios.get(`http://localhost:5555/memo/`);
     const newData = await response.data;
-    setMemos(newData);
-    setCounter(newData[newData.length - 1].id + 1);
+    if (newData.length > 0) {
+      setMemos(newData);
+      setCounter(newData[newData.length - 1].id + 1);
+      setTracking(newData[newData.length - 1].id + 1);
+    }
   }
 
   //load the data once after mounting
@@ -44,6 +47,10 @@ function App() {
     getMemosDB();
   }, []);
 
+  useEffect(() => {
+    console.log(counter);
+  }, [counter]);
+
   //a function to display relevant memo information(right panel) when memo item clicked(leftpanel)
   function handleMemoClick(id) {
     //filters for the correct memo based upon its id and sets the data for the the relevant useStates
@@ -51,7 +58,7 @@ function App() {
     setTracking(item[0].id);
     setTitle(item[0].title);
     setDetail(item[0].detail);
-    //document.getElementById("formDetails").value=detail;
+    // document.getElementById("formDetails").value = detail;
   }
 
   //a function to remove a memo from storage
@@ -72,50 +79,47 @@ function App() {
   function handleDetailChange(e) {
     setDetail(e.target.value);
   }
-
+  //posts the memo data to the database
   async function setMemoByID(memoDataObject) {
     axios.post(`http://localhost:5555/memo/add`, memoDataObject);
   }
-
+  //event loop after a submission is made
   function handleMemoSubmit(event) {
     event.preventDefault();
+    //check validations
     if (!title) {
       setValidation("Please enter a Title");
       return;
-    }
-    if (!detail) {
+    } else if (!detail) {
       setValidation("Please enter some details");
       return;
-    }
-
-    if (memos.length >= 8) {
+    } else if (memos.length >= 8) {
       setValidation("limit of 8 memos for demonstrative purposes");
       return;
-    }
-    setTracking(counter + 1);
-    console.log({
-      id: tracking,
-      title: JSON.stringify(title),
-      detail: JSON.stringify(detail),
-    });
-
-    setMemos([
-      ...memos,
-      {
-        id: tracking,
+    } else {
+      //if validations are fine proceed to load the new memo into the frontend store
+      setMemos([
+        ...memos,
+        {
+          id: tracking,
+          title: JSON.stringify(title),
+          detail: JSON.stringify(detail),
+        },
+      ]);
+      //also post to the back end store
+      setMemoByID({
+        id: JSON.stringify(tracking),
         title: JSON.stringify(title),
         detail: JSON.stringify(detail),
-      },
-    ]);
-    setMemoByID({
-      id: JSON.stringify(tracking),
-      title: JSON.stringify(title),
-      detail: JSON.stringify(detail),
-    }).then(() => {
-      setTitle("");
-      setDetail("");
-      setValidation("");
-    });
+      }).then(() => {
+        //finally reset memo details and adjust tracking and counter
+        setTitle("");
+        setDetail("");
+        setValidation("");
+        setTracking(counter + 1);
+        setCounter(counter + 1);
+      });
+    }
   }
 
   //a function to generate a clean memo for submission with a rudimentary unique id system
