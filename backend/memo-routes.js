@@ -20,19 +20,13 @@ router.route("/:id").delete((req, res) => {
 });
 
 router.route("/update/:id").put((req, res) => {
-  MemoData.findOneAndUpdate({ id: req.params.id }, { title: req.body.title })
+  MemoData.findOneAndUpdate(
+    { id: req.params.id },
+    { title: req.body.title, detail: req.body.detail }
+  )
     .then((res) => console.log("status", res))
     .catch((err) => res.status(400).json("Error: " + err));
 });
-// MemoData.find(req.params.id)
-//   .then((memo) => {
-//     memo.title = req.body.title;
-//     memo.detail = req.body.detail;
-//     memo.save();
-//   })
-//   .then(console.log("successful update"))
-//   .catch((err) => res.status(400).json("Error: " + err));
-// });
 
 router.route("/add").post((req, res) => {
   const id = req.body.id;
