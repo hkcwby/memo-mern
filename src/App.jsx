@@ -88,7 +88,7 @@ function App() {
   }
   //posts the memo data to the database
   async function updateMemoByID(id, memoDataObject) {
-    axios.post(`http://localhost:5555/memo/update/${id}`, memoDataObject);
+    axios.put(`http://localhost:5555/memo/update/${id}`, memoDataObject);
   }
   //event loop after a submission is made
   function handleMemoSubmit(event) {
@@ -140,7 +140,7 @@ function App() {
           )
         );
         //also post to the back end store
-        updateMemoByID({
+        updateMemoByID(tracking, {
           id: tracking,
           title: title,
           detail: detail,
