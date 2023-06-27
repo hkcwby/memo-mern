@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import LeftPanel from "./components/LeftPanel.jsx";
 import RightPanel from "./components/RightPanel.jsx";
-import firebase from "./firebase.js";
+
 import { Container, Typography, CssBaseline, Box } from "@mui/material";
 import { ThemeProvider } from "@mui/material";
 import { theme, darkTheme } from "./theme.js";
@@ -10,9 +10,6 @@ import "./App.css";
 import axios from "axios";
 
 function App() {
-  const ref = firebase.firestore().collection("memos");
-  //the memo data as stored in the database, in this case we are just using a dummy file to represent our database
-  // example of a memo array [{ id: 1, title: "hello", detail:"world" },]
   const [memos, setMemos] = useState([]);
 
   //useState variable for both the title and detail of our present memo shown on the right panel
@@ -66,7 +63,6 @@ function App() {
 
   //a function to remove a memo from storage
   async function handleDeleteClick(id) {
-    //ref.doc(String(id)).delete();
     axios.delete(`http://localhost:5555/memo/${id}`);
     setMemos(memos.filter((memo) => memo.id != id));
     setTracking(counter);
