@@ -51,10 +51,10 @@ function App() {
   }, [counter]);
 
   //a function to display relevant memo information(right panel) when memo item clicked(leftpanel)
-  function handleMemoClick(id) {
+  function handleMemoClick(_id) {
     //filters for the correct memo based upon its id and sets the data for the the relevant useStates
-    const item = memos.filter((memo) => memo.id == id);
-    setTracking(item[0].id);
+    const item = memos.filter((memo) => memo._id == _id);
+    setTracking(item[0]._id);
     setTitle(item[0].title);
     setDetail(item[0].detail);
     setEdit(true);
@@ -62,9 +62,10 @@ function App() {
   }
 
   //a function to remove a memo from storage
-  async function handleDeleteClick(id) {
-    axios.delete(`http://localhost:5555/memo/${id}`);
-    setMemos(memos.filter((memo) => memo.id != id));
+  async function handleDeleteClick(_id) {
+    console.log(_id, "this is id");
+    axios.delete(`http://localhost:5555/memo/${_id}`);
+    setMemos(memos.filter((memo) => memo._id != _id));
     setTracking(counter);
     setTitle("");
     setDetail("");

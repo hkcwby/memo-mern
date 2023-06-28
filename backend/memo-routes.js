@@ -7,14 +7,16 @@ router.route("/").get((req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-router.route("/fetchdata").get((req, res) => {
-  MemoData.find({ id: req.query.id })
-    .then((data) => res.json(data))
-    .catch((err) => res.status(400).json("Error: " + err));
-});
+//presently unrequired fetch request route based on _id
+// router.route("/fetchdata").get((req, res) => {
+//   MemoData.find({ _id: req.query._id })
+//     .then((data) => res.json(data))
+//     .catch((err) => res.status(400).json("Error: " + err));
+// });
 
 router.route("/:id").delete((req, res) => {
-  MemoData.findOneAndDelete({ id: req.params.id })
+  console.log(req.params.id);
+  MemoData.deleteOne({ _id: req.params.id })
     .then(console.log("successful delete"))
     .catch((err) => res.status(400).json("Error: " + err));
 });

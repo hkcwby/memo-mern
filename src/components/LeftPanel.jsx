@@ -76,7 +76,7 @@ function LeftPanel(props) {
               </Typography>
             )}
             <Edit
-              onClick={() => props.onMemoClick(item.id)}
+              onClick={() => props.onMemoClick(item._id)}
               sx={{
                 borderStyle: "solid",
                 borderRadius: "20%",
@@ -93,7 +93,7 @@ function LeftPanel(props) {
               }}
             />
             <Clear
-              onClick={() => props.onDeleteClick(item.id)}
+              onClick={() => props.onDeleteClick(item._id)}
               sx={{
                 borderStyle: "solid",
                 borderRadius: "20%",
