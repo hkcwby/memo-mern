@@ -8,26 +8,50 @@ import { theme, darkTheme } from "./theme.js";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import "./App.css";
 import axios from "axios";
-import { useQuery, useMutation } from "react-query";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 
 function App() {
+  const queryClient = useQueryClient();
+
+  // /memo => ["memos"]
+  // /memo/1 => ["memos", memo.id]
   const memosQuery = useQuery({
     queryKey: ["memos"],
     queryFn: () =>
       axios.get(`http://localhost:5555/memo/`).then((res) => res.data),
   });
 
-  if (memosQuery.isLoading) return <h1>loading...</h1>;
-  if (memosQuery.isError) {
-    return <pre>{JSON.stringify(memosQuery.error)}</pre>;
-  }
-  return (
-    <div>
-      {memosQuery.data.map((item) => (
-        <h2>{item.title}</h2>
-      ))}
-    </div>
-  );
+  const memoPostMutation = useMutation({
+    mutationFn: () =>
+      axios.post(`http://localhost:5555/memo/add`, {
+        id: 7,
+        title: "Mutation Test",
+        detail: "tested Mutation",
+      }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["posts"]);
+    },
+  });
+
+  // if (memosQuery.isLoading) return <h1>loading...</h1>;
+  // if (memosQuery.isError) {
+  //   return <pre>{JSON.stringify(memosQuery.error)}</pre>;
+  // }
+  // return (
+  //   <>
+  //     <div>
+  //       {memosQuery.data.map((item) => (
+  //         <h2>{item.title}</h2>
+  //       ))}
+  //     </div>
+  //     <button
+  //       disabled={memoPostMutation.isLoading}
+  //       onClick={() => memoPostMutation.mutate()}
+  //     >
+  //       submit
+  //     </button>
+  //   </>
+  // );
 
   const [memos, setMemos] = useState([]);
 
@@ -179,6 +203,10 @@ function App() {
     setTitle("New title");
     setDetail("New memo");
   }
+  if (memosQuery.isLoading) return <h1>loading...</h1>;
+  if (memosQuery.isError) {
+    return <pre>{JSON.stringify(memosQuery.error)}</pre>;
+  }
 
   return (
     <ThemeProvider theme={mode ? theme : darkTheme}>
@@ -232,7 +260,8 @@ function App() {
           }}
         >
           <LeftPanel
-            memos={memos}
+            // memos={memos}
+            memos={memosQuery.data}
             tracking={tracking}
             onMemoClick={handleMemoClick}
             onDeleteClick={handleDeleteClick}
