@@ -8,8 +8,27 @@ import { theme, darkTheme } from "./theme.js";
 import { DarkMode, LightMode } from "@mui/icons-material";
 import "./App.css";
 import axios from "axios";
+import { useQuery, useMutation } from "react-query";
 
 function App() {
+  const memosQuery = useQuery({
+    queryKey: ["memos"],
+    queryFn: () =>
+      axios.get(`http://localhost:5555/memo/`).then((res) => res.data),
+  });
+
+  if (memosQuery.isLoading) return <h1>loading...</h1>;
+  if (memosQuery.isError) {
+    return <pre>{JSON.stringify(memosQuery.error)}</pre>;
+  }
+  return (
+    <div>
+      {memosQuery.data.map((item) => (
+        <h2>{item.title}</h2>
+      ))}
+    </div>
+  );
+
   const [memos, setMemos] = useState([]);
 
   //useState variable for both the title and detail of our present memo shown on the right panel
