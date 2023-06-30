@@ -22,14 +22,18 @@ function App() {
   });
 
   const memoPostMutation = useMutation({
-    mutationFn: () =>
-      axios.post(`http://localhost:5555/memo/add`, {
-        id: 7,
-        title: "Mutation Test",
-        detail: "tested Mutation",
-      }),
+    mutationFn: (memoDataObject) =>
+      axios.post(`http://localhost:5555/memo/add`, memoDataObject),
     onSuccess: () => {
-      queryClient.invalidateQueries(["posts"]);
+      queryClient.invalidateQueries(["memos"]);
+    },
+  });
+
+  const memoPutMutation = useMutation({
+    mutationFn: (id, memoDataObject) =>
+      axios.put(`http://localhost:5555/memo/update/${id}`, memoDataObject),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["memos"]);
     },
   });
 
@@ -72,26 +76,22 @@ function App() {
     setMode(!mode);
   }
 
-  async function getMemosDB() {
-    // get the data from the api
-    const response = await axios.get(`http://localhost:5555/memo/`);
-    const newData = await response.data;
-    if (newData.length > 0) {
-      setMemos(newData);
-      setCounter(newData[newData.length - 1].id + 1);
-      setTracking(newData[newData.length - 1].id + 1);
-    }
-  }
+  // async function getMemosDB() {
+  //   // get the data from the api
+  //   const response = await axios.get(`http://localhost:5555/memo/`);
+  //   const newData = await response.data;
+  //   if (newData.length > 0) {
+  //     setMemos(newData);
+  //     setCounter(newData[newData.length - 1].id + 1);
+  //     setTracking(newData[newData.length - 1].id + 1);
+  //   }
+  // }
 
   //load the data once after mounting
 
-  useEffect(() => {
-    getMemosDB();
-  }, []);
-
-  useEffect(() => {
-    console.log(counter);
-  }, [counter]);
+  // useEffect(() => {
+  //   getMemosDB();
+  // }, []);
 
   //a function to display relevant memo information(right panel) when memo item clicked(leftpanel)
   function handleMemoClick(_id) {
@@ -124,7 +124,8 @@ function App() {
   }
   //posts the memo data to the database
   async function setMemoByID(memoDataObject) {
-    axios.post(`http://localhost:5555/memo/add`, memoDataObject);
+    memoPostMutation.mutate(memoDataObject);
+    // axios.post(`http://localhost:5555/memo/add`, memoDataObject);
   }
   //posts the memo data to the database
   async function updateMemoByID(id, memoDataObject) {
@@ -146,14 +147,14 @@ function App() {
     } else {
       //if validations are fine proceed to load the new memo into the frontend store
       if (!edit) {
-        setMemos([
-          ...memos,
-          {
-            id: tracking,
-            title: title,
-            detail: detail,
-          },
-        ]);
+        // setMemos([
+        //   ...memos,
+        //   {
+        //     id: tracking,
+        //     title: title,
+        //     detail: detail,
+        //   },
+        // ]);
         //also post to the back end store
         setMemoByID({
           id: tracking,
@@ -168,17 +169,17 @@ function App() {
           setCounter(counter + 1);
         });
       } else {
-        setMemos(
-          memos.map((memo) =>
-            memo.id == tracking
-              ? {
-                  id: tracking,
-                  title: title,
-                  detail: detail,
-                }
-              : memo
-          )
-        );
+        // setMemos(
+        //   memos.map((memo) =>
+        //     memo.id == tracking
+        //       ? {
+        //           id: tracking,
+        //           title: title,
+        //           detail: detail,
+        //         }
+        //       : memo
+        //   )
+        // );
         //also post to the back end store
         updateMemoByID(tracking, {
           id: tracking,
