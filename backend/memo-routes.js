@@ -17,14 +17,19 @@ router.route("/").get((req, res) => {
 router.route("/:id").delete((req, res) => {
   console.log(req.params.id);
   MemoData.deleteOne({ _id: req.params.id })
+    .then(() => res.json("deleted"))
     .then(console.log("successful delete"))
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
 router.route("/update/:id").put((req, res) => {
+  console.log(req.params.id, req.body);
   MemoData.findOneAndUpdate(
-    { id: req.params.id },
-    { title: req.body.title, detail: req.body.detail }
+    { _id: req.params.id },
+    { title: req.body.title, detail: req.body.detail },
+    {
+      new: false,
+    }
   )
     .then((res) => console.log("status", res))
     .catch((err) => res.status(400).json("Error: " + err));

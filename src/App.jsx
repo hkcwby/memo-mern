@@ -37,6 +37,13 @@ function App() {
     },
   });
 
+  const memoDeleteMutation = useMutation({
+    mutationFn: (_id) => axios.delete(`http://localhost:5555/memo/${_id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries(["memos"]);
+    },
+  });
+
   // if (memosQuery.isLoading) return <h1>loading...</h1>;
   // if (memosQuery.isError) {
   //   return <pre>{JSON.stringify(memosQuery.error)}</pre>;
@@ -96,7 +103,8 @@ function App() {
   //a function to display relevant memo information(right panel) when memo item clicked(leftpanel)
   function handleMemoClick(_id) {
     //filters for the correct memo based upon its id and sets the data for the the relevant useStates
-    const item = memos.filter((memo) => memo._id == _id);
+    // const item = memos.filter((memo) => memo._id == _id);
+    const item = memosQuery.data.filter((memo) => memo._id == _id);
     setTracking(item[0]._id);
     setTitle(item[0].title);
     setDetail(item[0].detail);
@@ -107,7 +115,8 @@ function App() {
   //a function to remove a memo from storage
   async function handleDeleteClick(_id) {
     console.log(_id, "this is id");
-    axios.delete(`http://localhost:5555/memo/${_id}`);
+    memoDeleteMutation.mutate(_id);
+    // axios.delete(`http://localhost:5555/memo/${_id}`);
     setMemos(memos.filter((memo) => memo._id != _id));
     setTracking(counter);
     setTitle("");
@@ -117,6 +126,7 @@ function App() {
   //update the stored title of the memo as it is typed
   function handleTitleChange(e) {
     setTitle(e.target.value);
+    console.log(title);
   }
   //update the stored detail of the memo as it is typed
   function handleDetailChange(e) {
@@ -129,7 +139,9 @@ function App() {
   }
   //posts the memo data to the database
   async function updateMemoByID(id, memoDataObject) {
-    axios.put(`http://localhost:5555/memo/update/${id}`, memoDataObject);
+    console.log(memoDataObject);
+    memoPutMutation.mutate(id, memoDataObject);
+    //axios.put(`http://localhost:5555/memo/update/${id}`, memoDataObject);
   }
   //event loop after a submission is made
   function handleMemoSubmit(event) {
