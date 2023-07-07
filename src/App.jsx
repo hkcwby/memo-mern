@@ -30,8 +30,8 @@ function App() {
   });
 
   const memoPutMutation = useMutation({
-    mutationFn: (id, memoDataObject) =>
-      axios.put(`http://localhost:5555/memo/update/${id}`, memoDataObject),
+    mutationFn: (data) =>
+      axios.put(`http://localhost:5555/memo/update/${data._id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries(["memos"]);
     },
@@ -43,26 +43,6 @@ function App() {
       queryClient.invalidateQueries(["memos"]);
     },
   });
-
-  // if (memosQuery.isLoading) return <h1>loading...</h1>;
-  // if (memosQuery.isError) {
-  //   return <pre>{JSON.stringify(memosQuery.error)}</pre>;
-  // }
-  // return (
-  //   <>
-  //     <div>
-  //       {memosQuery.data.map((item) => (
-  //         <h2>{item.title}</h2>
-  //       ))}
-  //     </div>
-  //     <button
-  //       disabled={memoPostMutation.isLoading}
-  //       onClick={() => memoPostMutation.mutate()}
-  //     >
-  //       submit
-  //     </button>
-  //   </>
-  // );
 
   const [memos, setMemos] = useState([]);
 
@@ -82,23 +62,6 @@ function App() {
   function darkModeToggle() {
     setMode(!mode);
   }
-
-  // async function getMemosDB() {
-  //   // get the data from the api
-  //   const response = await axios.get(`http://localhost:5555/memo/`);
-  //   const newData = await response.data;
-  //   if (newData.length > 0) {
-  //     setMemos(newData);
-  //     setCounter(newData[newData.length - 1].id + 1);
-  //     setTracking(newData[newData.length - 1].id + 1);
-  //   }
-  // }
-
-  //load the data once after mounting
-
-  // useEffect(() => {
-  //   getMemosDB();
-  // }, []);
 
   //a function to display relevant memo information(right panel) when memo item clicked(leftpanel)
   function handleMemoClick(_id) {
@@ -138,9 +101,9 @@ function App() {
     // axios.post(`http://localhost:5555/memo/add`, memoDataObject);
   }
   //posts the memo data to the database
-  async function updateMemoByID(id, memoDataObject) {
-    console.log(memoDataObject);
-    memoPutMutation.mutate(id, memoDataObject);
+  async function updateMemoByID(data) {
+    console.log(data);
+    memoPutMutation.mutate(data);
     //axios.put(`http://localhost:5555/memo/update/${id}`, memoDataObject);
   }
   //event loop after a submission is made
@@ -193,8 +156,8 @@ function App() {
         //   )
         // );
         //also post to the back end store
-        updateMemoByID(tracking, {
-          id: tracking,
+        updateMemoByID({
+          _id: tracking,
           title: title,
           detail: detail,
         }).then(() => {
