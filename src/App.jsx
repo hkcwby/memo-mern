@@ -77,9 +77,7 @@ function App() {
 
   //a function to remove a memo from storage
   async function handleDeleteClick(_id) {
-    console.log(_id, "this is id");
     memoDeleteMutation.mutate(_id);
-    // axios.delete(`http://localhost:5555/memo/${_id}`);
     setMemos(memos.filter((memo) => memo._id != _id));
     setTracking(counter);
     setTitle("");
@@ -89,7 +87,6 @@ function App() {
   //update the stored title of the memo as it is typed
   function handleTitleChange(e) {
     setTitle(e.target.value);
-    console.log(title);
   }
   //update the stored detail of the memo as it is typed
   function handleDetailChange(e) {
@@ -98,13 +95,10 @@ function App() {
   //posts the memo data to the database
   async function setMemoByID(memoDataObject) {
     memoPostMutation.mutate(memoDataObject);
-    // axios.post(`http://localhost:5555/memo/add`, memoDataObject);
   }
   //posts the memo data to the database
   async function updateMemoByID(data) {
-    console.log(data);
     memoPutMutation.mutate(data);
-    //axios.put(`http://localhost:5555/memo/update/${id}`, memoDataObject);
   }
   //event loop after a submission is made
   function handleMemoSubmit(event) {
@@ -122,15 +116,6 @@ function App() {
     } else {
       //if validations are fine proceed to load the new memo into the frontend store
       if (!edit) {
-        // setMemos([
-        //   ...memos,
-        //   {
-        //     id: tracking,
-        //     title: title,
-        //     detail: detail,
-        //   },
-        // ]);
-        //also post to the back end store
         setMemoByID({
           id: tracking,
           title: title,
@@ -144,18 +129,6 @@ function App() {
           setCounter(counter + 1);
         });
       } else {
-        // setMemos(
-        //   memos.map((memo) =>
-        //     memo.id == tracking
-        //       ? {
-        //           id: tracking,
-        //           title: title,
-        //           detail: detail,
-        //         }
-        //       : memo
-        //   )
-        // );
-        //also post to the back end store
         updateMemoByID({
           _id: tracking,
           title: title,

@@ -23,18 +23,16 @@ router.route("/:id").delete((req, res) => {
 });
 
 router.route("/update/:_id").put((req, res) => {
-  console.log(req.params._id, req.body);
   MemoData.findOneAndUpdate(
     { _id: req.params._id },
-
     { title: req.body.title, detail: req.body.detail },
     {
       new: true,
     }
   ).then((MemoData) =>
     MemoData.save()
-      // .then(() => res.json("updated"))
-      .then((res) => console.log("status", res))
+      .then(() => res.json("updated"))
+      .then(console.log("successful update"))
       .catch((err) => res.status(400).json("Error: " + err))
   );
 });
@@ -48,6 +46,7 @@ router.route("/add").post((req, res) => {
   newMemoData
     .save()
     .then(() => res.json("Data Added!"))
+    .then(console.log("successful addition"))
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
