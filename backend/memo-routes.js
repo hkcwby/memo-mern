@@ -38,10 +38,11 @@ router.route("/update/:_id").put((req, res) => {
 });
 
 router.route("/add").post((req, res) => {
-  const id = req.body.id;
+  // const id = req.body.id;
   const title = req.body.title;
   const detail = req.body.detail;
-  const newMemoData = new MemoData({ id, title, detail });
+  // const newMemoData = new MemoData({ id, title, detail });
+  const newMemoData = new MemoData({ title, detail });
 
   newMemoData
     .save()

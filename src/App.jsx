@@ -117,7 +117,7 @@ function App() {
       //if validations are fine proceed to load the new memo into the frontend store
       if (!edit) {
         setMemoByID({
-          id: tracking,
+          // id: tracking,
           title: title,
           detail: detail,
         }).then(() => {

@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 
 const memoSchema = new Schema(
   {
-    id: { type: Number, required: true },
+    // id: { type: Number, required: true },
     title: { type: String, required: true },
     detail: { type: String, required: true },
   },
