@@ -44,24 +44,26 @@ function App() {
     },
   });
 
+  //storage of the memos recalled from the database
   const [memos, setMemos] = useState([]);
 
-  //useState variable for both the title and detail of our present memo shown on the right panel
+  //a toggle state for dark mode
   const [mode, setMode] = useState(true);
+  //a function to toggle dark mode and light mode
+  function darkModeToggle() {
+    setMode(!mode);
+  }
+
+  //useState variable for both the title and detail of our present memo shown on the right panel
   const [title, setTitle] = useState("");
   const [detail, setDetail] = useState("");
-  // a counter for creating new unique memo id
-  const [counter, setCounter] = useState(0);
+
   //a tracking variable to keep track of the current memo based on its unique id
   const [tracking, setTracking] = useState(0);
   //set a validation variable to catch errors and provide user feedback
   const [validation, setValidation] = useState("");
   //differentiate between an edit and a new memo
   const [edit, setEdit] = useState(false);
-
-  function darkModeToggle() {
-    setMode(!mode);
-  }
 
   //a function to display relevant memo information(right panel) when memo item clicked(leftpanel)
   function handleMemoClick(_id) {
@@ -79,7 +81,7 @@ function App() {
   async function handleDeleteClick(_id) {
     memoDeleteMutation.mutate(_id);
     setMemos(memos.filter((memo) => memo._id != _id));
-    setTracking(counter);
+    setTracking("");
     setTitle("");
     setDetail("");
   }
@@ -121,12 +123,11 @@ function App() {
           title: title,
           detail: detail,
         }).then(() => {
-          //finally reset memo details and adjust tracking and counter
+          //finally reset memo details and tracking
           setTitle("");
           setDetail("");
           setValidation("");
-          setTracking(counter + 1);
-          setCounter(counter + 1);
+          setTracking("");
         });
       } else {
         updateMemoByID({
@@ -134,12 +135,11 @@ function App() {
           title: title,
           detail: detail,
         }).then(() => {
-          //finally reset memo details and adjust tracking and counter
+          //finally reset memo details and tracking
           setTitle("");
           setDetail("");
           setValidation("");
-          setTracking(counter + 1);
-          setCounter(counter + 1);
+          setTracking("");
         });
       }
     }
@@ -148,7 +148,6 @@ function App() {
   //a function to generate a clean memo for submission with a rudimentary unique id system
   function handleComposeClick() {
     setEdit(false);
-    setTracking(counter);
     setTitle("New title");
     setDetail("New memo");
   }
