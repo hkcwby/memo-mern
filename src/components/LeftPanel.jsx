@@ -45,7 +45,7 @@ function LeftPanel(props) {
       >
         {props.memos.map((item, index) => (
           <Box sx={{ display: "flex" }}>
-            {item.id == props.tracking ? (
+            {item._id == props.tracking ? (
               <Typography
                 key={item.id}
                 id={`list-item-${item.id}`}
