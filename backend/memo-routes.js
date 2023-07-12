@@ -1,6 +1,24 @@
 const router = require("express").Router();
 let MemoData = require("./memo-model.js");
 
+//Create
+
+router.route("/add").post((req, res) => {
+  // const id = req.body.id;
+  const title = req.body.title;
+  const detail = req.body.detail;
+  // const newMemoData = new MemoData({ id, title, detail });
+  const newMemoData = new MemoData({ title, detail });
+
+  newMemoData
+    .save()
+    .then(() => res.json("Data Added!"))
+    .then(console.log("successful addition"))
+    .catch((err) => res.status(400).json("Error: " + err));
+});
+
+//Read
+
 router.route("/").get((req, res) => {
   MemoData.find()
     .then((data) => res.json(data))
@@ -14,13 +32,7 @@ router.route("/").get((req, res) => {
 //     .catch((err) => res.status(400).json("Error: " + err));
 // });
 
-router.route("/:id").delete((req, res) => {
-  console.log(req.params.id);
-  MemoData.deleteOne({ _id: req.params.id })
-    .then(() => res.json("deleted"))
-    .then(console.log("successful delete"))
-    .catch((err) => res.status(400).json("Error: " + err));
-});
+//Update
 
 router.route("/update/:_id").put((req, res) => {
   MemoData.findOneAndUpdate(
@@ -37,17 +49,13 @@ router.route("/update/:_id").put((req, res) => {
   );
 });
 
-router.route("/add").post((req, res) => {
-  // const id = req.body.id;
-  const title = req.body.title;
-  const detail = req.body.detail;
-  // const newMemoData = new MemoData({ id, title, detail });
-  const newMemoData = new MemoData({ title, detail });
+//Delete
 
-  newMemoData
-    .save()
-    .then(() => res.json("Data Added!"))
-    .then(console.log("successful addition"))
+router.route("/:id").delete((req, res) => {
+  console.log(req.params.id);
+  MemoData.deleteOne({ _id: req.params.id })
+    .then(() => res.json("deleted"))
+    .then(console.log("successful delete"))
     .catch((err) => res.status(400).json("Error: " + err));
 });
 

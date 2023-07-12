@@ -15,12 +15,15 @@ function App() {
 
   // /memo => ["memos"]
   // /memo/1 => ["memos", memo.id]
+
+  // react query function to acquire all memos from the database
   const memosQuery = useQuery({
     queryKey: ["memos"],
     queryFn: () =>
       axios.get(`http://localhost:5555/memo/`).then((res) => res.data),
   });
 
+  //react query function to create a new record
   const memoPostMutation = useMutation({
     mutationFn: (memoDataObject) =>
       axios.post(`http://localhost:5555/memo/add`, memoDataObject),
@@ -28,7 +31,7 @@ function App() {
       queryClient.invalidateQueries(["memos"]);
     },
   });
-
+  //react query function to update a record
   const memoPutMutation = useMutation({
     mutationFn: (data) =>
       axios.put(`http://localhost:5555/memo/update/${data._id}`, data),
